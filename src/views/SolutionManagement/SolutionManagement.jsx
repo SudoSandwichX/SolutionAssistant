@@ -1,15 +1,19 @@
 import React from "react";
-import { Grid, InputLabel } from "@material-ui/core";
-import TabsWrappedLabel from "../../components/Tabs/Tabs.jsx";
 import {
-  ProfileCard,
+  Grid,
+  InputLabel,
+  FormControl,
+  MenuItem,
+  Select
+} from "@material-ui/core";
+import {
   RegularCard,
   Button,
   CustomInput,
-  ItemGrid
+  ItemGrid,
+  CustomSelect,
+  TabsWrappedLabel
 } from "components";
-
-import avatar from "assets/img/faces/marc.jpg";
 
 class SolutionManagement extends React.Component {
   state = {
@@ -80,14 +84,11 @@ function SettingsTab(props) {
     <div>
       <Grid container>
         <ItemGrid xs={12} sm={12} md={5}>
-          <CustomInput
-            labelText="Company (disabled)"
-            id="company-disabled"
+          <CustomSelect
+            labelText="Solution Name"
+            id="solution-disabled"
             formControlProps={{
               fullWidth: true
-            }}
-            inputProps={{
-              disabled: true
             }}
           />
         </ItemGrid>

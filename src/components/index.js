@@ -22,6 +22,12 @@ import IconButton from "./CustomButtons/IconButton.jsx";
 import CustomInput from "./CustomInput/CustomInput.jsx";
 
 // ##############################
+// // // CustomSelect
+// #############################
+
+import CustomSelect from "./CustomSelect/CustomSelect.jsx";
+
+// ##############################
 // // // Footer
 // #############################
 
@@ -52,6 +58,11 @@ import Sidebar from "./Sidebar/Sidebar.jsx";
 
 import Snackbar from "./Snackbar/Snackbar.jsx";
 import SnackbarContent from "./Snackbar/SnackbarContent.jsx";
+
+// ##############################
+// // // Tabs
+// #############################
+import TabsWrappedLabel from "./Tabs/Tabs.jsx";
 
 // ##############################
 // // // Table
@@ -92,6 +103,8 @@ export {
   IconButton,
   // CustomInput
   CustomInput,
+  // CustomSelect
+  CustomSelect,
   // Footer
   Footer,
   // Grid
@@ -106,6 +119,7 @@ export {
   SnackbarContent,
   // Table
   Table,
+  TabsWrappedLabel,
   // Tasks
   Tasks,
   // Typography

@@ -40,7 +40,7 @@ class TabsWrappedLabel extends React.Component {
     const { classes, tabs } = this.props;
     const { value } = this.state;
     const tab = (
-      <AppBar position="static">
+      <AppBar position="static" color="default">
         <Tabs value={value} onChange={this.handleChange}>
           {this.props.tabs.map(tab => <Tab value={tab.id} label={tab.title} />)}
         </Tabs>
