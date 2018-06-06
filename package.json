@@ -1,7 +1,7 @@
 {
-  "name": "material-dashboard-react",
-  "version": "1.2.0",
-  "description": "Material Dashboard React. Coded by Creative Tim",
+  "name": "dynamics-solution-assistant",
+  "version": "0.1.0",
+  "description": "Dynamics 365 Solution Assistant.",
   "private": false,
   "main": "src/electron/main.js",
   "dependencies": {
