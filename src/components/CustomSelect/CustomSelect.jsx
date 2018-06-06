@@ -31,7 +31,8 @@ class CustomSelect extends React.Component {
       labelProps,
       inputProps,
       error,
-      success
+      success,
+      menuItems
     } = this.props;
 
     const labelClasses = cx({
@@ -46,6 +47,11 @@ class CustomSelect extends React.Component {
     const marginTop = cx({
       [classes.marginTop]: labelText === undefined
     });
+    const menu = menuItems.map(item => (
+      <React.Fragment>
+        <option value={item.value}>{item.text}</option>
+      </React.Fragment>
+    ));
     return (
       <FormControl
         {...formControlProps}
@@ -54,7 +60,7 @@ class CustomSelect extends React.Component {
         {labelText !== undefined ? (
           <InputLabel
             className={classes.labelRoot + labelClasses}
-            htmlFor={id}
+            htmlFor={inputProps.id}
             {...labelProps}
           >
             {labelText}
@@ -64,14 +70,9 @@ class CustomSelect extends React.Component {
           native
           value={this.state.selectedValue}
           onChange={this.handleChange("selectedValue")}
-          inputProps={{
-            id: "age-native-simple"
-          }}
+          {...inputProps}
         >
-          <option value="" />
-          <option value={10}>Ten</option>
-          <option value={20}>Twenty</option>
-          <option value={30}>Thirty</option>
+          {menu}
         </Select>
         {error ? (
           <Clear className={classes.feedback + " " + classes.labelRootError} />

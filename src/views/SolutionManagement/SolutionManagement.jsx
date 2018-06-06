@@ -83,13 +83,37 @@ function SettingsTab(props) {
   return (
     <div>
       <Grid container>
-        <ItemGrid xs={12} sm={12} md={5}>
+        <ItemGrid xs={12} sm={12} md={3}>
           <CustomSelect
-            labelText="Solution Name"
-            id="solution-disabled"
+            labelText="Action"
+            inputProps={{
+              id: "action-select"
+            }}
             formControlProps={{
               fullWidth: true
             }}
+            menuItems={[
+              { value: "0", text: "" },
+              { value: "1", text: "Extract" },
+              { value: "2", text: "Pack" }
+            ]}
+          />
+        </ItemGrid>
+        <ItemGrid xs={12} sm={12} md={3}>
+          <CustomSelect
+            labelText="Package Type"
+            inputProps={{
+              id: "packageType-select"
+            }}
+            formControlProps={{
+              fullWidth: true
+            }}
+            menuItems={[
+              { value: "0", text: "" },
+              { value: "1", text: "Unmanaged" },
+              { value: "2", text: "Managed" },
+              { value: "2", text: "Both" }
+            ]}
           />
         </ItemGrid>
         <ItemGrid xs={12} sm={12} md={3}>
