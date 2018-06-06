@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { withStyles, Grid, Hidden } from "material-ui";
+import { withStyles, Grid, Hidden } from "@material-ui/core";
 
 import { RegularCard, P, A, ItemGrid } from "components";
 

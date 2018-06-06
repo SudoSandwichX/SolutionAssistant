@@ -1,6 +1,7 @@
-import DashboardPage from "views/Dashboard/Dashboard.jsx";
+import DashboardPage from "../views/Dashboard/Dashboard.jsx";
+import SolutionManagement from "../views/SolutionManagement/SolutionManagement.jsx";
 
-import { Dashboard } from "@material-ui/icons";
+import { Dashboard, Folder } from "@material-ui/icons";
 
 const dashboardRoutes = [
   {
@@ -9,6 +10,13 @@ const dashboardRoutes = [
     navbarName: "Dashboard",
     icon: Dashboard,
     component: DashboardPage
+  },
+  {
+    path: "/solution",
+    sidebarName: "Solution Management",
+    navbarName: "Solution Management",
+    icon: Folder,
+    component: SolutionManagement
   },
   { redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect" }
 ];

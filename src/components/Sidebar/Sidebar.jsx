@@ -10,7 +10,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText
-} from "material-ui";
+} from "@material-ui/core";
 
 import sidebarStyle from "assets/jss/material-dashboard-react/sidebarStyle.jsx";
 

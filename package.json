@@ -5,12 +5,12 @@
   "private": false,
   "main": "src/electron/main.js",
   "dependencies": {
-    "@material-ui/icons": "1.0.0-beta.42",
+    "@material-ui/core": "^1.2.0",
+    "@material-ui/icons": "1.1.0",
     "chartist": "0.10.1",
     "classnames": "2.2.5",
     "electron": "^2.0.2",
     "electron-log": "^2.2.14",
-    "material-ui": "1.0.0-beta.41",
     "nedb": "^1.8.0",
     "node-powershell": "^3.3.1",
     "npm-run-all": "4.1.2",
@@ -19,6 +19,7 @@
     "react-chartist": "0.13.1",
     "react-dom": "16.2.0",
     "react-google-maps": "9.4.5",
+    "react-popper": "^0.10.4",
     "react-router-dom": "4.2.2",
     "react-scripts": "1.0.17",
     "react-swipeable-views": "0.12.12"

@@ -8,7 +8,7 @@ import {
   Typography,
   Tabs,
   Tab
-} from "material-ui";
+} from "@material-ui/core";
 import { BugReport, Code, Cloud } from "@material-ui/icons";
 
 import { Tasks } from "components";

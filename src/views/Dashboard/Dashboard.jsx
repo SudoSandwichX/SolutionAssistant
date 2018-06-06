@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // react plugin for creating charts
 import { ContentCopy, Warning } from "@material-ui/icons";
-import { withStyles, Grid } from "material-ui";
+import { withStyles, Grid } from "@material-ui/core";
 
 import { StatsCard, ItemGrid } from "components";
 

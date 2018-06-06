@@ -8,7 +8,7 @@ import {
   IconButton,
   Hidden,
   Button
-} from "material-ui";
+} from "@material-ui/core";
 import cx from "classnames";
 
 import headerStyle from "assets/jss/material-dashboard-react/headerStyle.jsx";

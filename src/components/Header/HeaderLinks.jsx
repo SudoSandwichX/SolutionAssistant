@@ -9,7 +9,7 @@ import {
   Grow,
   Paper,
   ClickAwayListener
-} from "material-ui";
+} from "@material-ui/core";
 import { Settings } from "@material-ui/icons";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/headerLinksStyle";

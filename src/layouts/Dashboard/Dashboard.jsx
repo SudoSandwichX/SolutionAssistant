@@ -4,7 +4,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
-import { withStyles } from "material-ui";
+import { withStyles } from "@material-ui/core";
 
 import { Header, Footer, Sidebar } from "components";
 
