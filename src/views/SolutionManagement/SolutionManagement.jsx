@@ -21,7 +21,7 @@ const { dialog } = electron.remote;
 
 class SolutionManagement extends React.Component {
   state = {
-    packagerSettings = {
+    packagerSettings: {
       action: "", // {Extract|Pack}
       zipfile: "", // <file path>
       folder: "", // <folder path>
@@ -123,8 +123,7 @@ function SettingsTab(props) {
             labelText="Action"
             inputProps={{
               id: "action-select",
-              name: "packagersettings.action",
-              onchange: packagerSettings.action
+              name: "packagersettings.action"
             }}
             formControlProps={{
               fullWidth: true
