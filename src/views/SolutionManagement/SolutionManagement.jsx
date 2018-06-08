@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React from "react";
 import {
   Grid,
@@ -14,28 +15,20 @@ import {
   CustomSelect,
   TabsWrappedLabel
 } from "components";
+import { connect } from "react-redux";
+import { updatePackagerSettings } from "../../actions/packagerSettingsActions";
+
 const electron = window.require("electron");
 const fs = electron.remote.require("fs");
 const ipcRenderer = electron.ipcRenderer;
 const { dialog } = electron.remote;
 
 class SolutionManagement extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onUpdatePackagerSettings = this.onUpdatePackagerSettings.bind(this);
+  }
   state = {
-    packagerSettings: {
-      action: "", // {Extract|Pack}
-      zipfile: "", // <file path>
-      folder: "", // <folder path>
-      packageType: "", // {Unmanaged|Managed|Both}
-      allowWrite: "", // {Yes|No}
-      AllowDelete: "", // {Yes|No|Prompt}
-      clobber: "",
-      errorlevel: "", // {Yes|No|Prompt}
-      map: "", // <file path>
-      nologo: "",
-      log: "", // <file path>
-      sourceLoc: "", // <string>
-      localize: ""
-    },
     solutionFile: ""
   };
 
@@ -63,9 +56,30 @@ class SolutionManagement extends React.Component {
     ipcRenderer.send("solution:unpack", this.state.solutionFile, "");
   }
 
+  onUpdatePackagerSettings() {
+    console.log(this.props);
+    this.props.onUpdatePackagerSettings({
+      action: "Pack", // {Extract|Pack}
+      zipfile: "", // <file path>
+      folder: "", // <folder path>
+      packageType: "", // {Unmanaged|Managed|Both}
+      allowWrite: "", // {Yes|No}
+      allowDelete: "", // {Yes|No|Prompt}
+      clobber: "",
+      errorlevel: "", // {Yes|No|Prompt}
+      map: "", // <file path>
+      nologo: "",
+      log: "", // <file path>
+      sourceLoc: "", // <string>
+      localize: ""
+    });
+  }
+
   render() {
     return (
       <div>
+        <button onClick={this.onUpdatePackagerSettings}>Update Settings</button>
+        <div> {this.props.packagerSettings.action} </div>
         <Grid container>
           <ItemGrid xs={12} sm={12} md={4}>
             <RegularCard
@@ -98,16 +112,30 @@ class SolutionManagement extends React.Component {
               }
             />
           </ItemGrid>
-          <ItemGrid xs={12} sm={12} md={12}>
-            <TabsWrappedLabel tabs={tabs} />
-          </ItemGrid>
+          <ItemGrid xs={12} sm={12} md={12} />
         </Grid>
       </div>
     );
   }
 }
 
-export default SolutionManagement;
+SolutionManagement.PropTypes = {
+  onUpdatePackagerSettings: PropTypes.func.isRequired
+};
+
+//<TabsWrappedLabel tabs={tabs} />
+const mapStateToProps = state => ({
+  packagerSettings: state.packagerSettings
+});
+
+const mapActionsToProps = {
+  onUpdatePackagerSettings: updatePackagerSettings
+};
+
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(SolutionManagement);
 
 const tabs = [
   { id: 1, title: "General", content: "General Tab!" },
@@ -129,9 +157,9 @@ function SettingsTab(props) {
               fullWidth: true
             }}
             menuItems={[
-              { value: "0", text: "" },
-              { value: "1", text: "Extract" },
-              { value: "2", text: "Pack" }
+              { value: 0, text: "" },
+              { value: 1, text: "Extract" },
+              { value: 2, text: "Pack" }
             ]}
           />
         </ItemGrid>
@@ -145,10 +173,10 @@ function SettingsTab(props) {
               fullWidth: true
             }}
             menuItems={[
-              { value: "0", text: "" },
-              { value: "1", text: "Unmanaged" },
-              { value: "2", text: "Managed" },
-              { value: "2", text: "Both" }
+              { value: 0, text: "" },
+              { value: 1, text: "Unmanaged" },
+              { value: 2, text: "Managed" },
+              { value: 2, text: "Both" }
             ]}
           />
         </ItemGrid>

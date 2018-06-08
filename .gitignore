@@ -9,8 +9,12 @@
 # production
 /build
 
+# data storag
+/src/assets/datastore
+
 # misc
 .DS_Store
+.store
 .env.local
 .env.development.local
 .env.test.local

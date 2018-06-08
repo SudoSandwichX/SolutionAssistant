@@ -10,7 +10,7 @@ const shell = require("node-powershell");
 
 const Datastore = require("nedb"),
   db = new Datastore({
-    filename: `${path.dirname(__dirname)}\\assets\\datastore\\settings`,
+    filename: `${path.dirname(__dirname)}\\assets\\datastore\\settings.store`,
     autoload: true
   });
 
