@@ -14,27 +14,54 @@ import {
   CustomSelect,
   TabsWrappedLabel
 } from "components";
+const electron = window.require("electron");
+const fs = electron.remote.require("fs");
+const ipcRenderer = electron.ipcRenderer;
+const { dialog } = electron.remote;
 
 class SolutionManagement extends React.Component {
   state = {
-    action: "", // {Extract|Pack}
-    zipfile: "", // <file path>
-    folder: "", // <folder path>
-    packageType: "", // {Unmanaged|Managed|Both}
-    allowWrite: "", // {Yes|No}
-    AllowDelete: "", // {Yes|No|Prompt}
-    clobber: "",
-    errorlevel: "", // {Yes|No|Prompt}
-    map: "", // <file path>
-    nologo: "",
-    log: "", // <file path>
-    sourceLoc: "", // <string>
-    localize: ""
+    packagerSettings = {
+      action: "", // {Extract|Pack}
+      zipfile: "", // <file path>
+      folder: "", // <folder path>
+      packageType: "", // {Unmanaged|Managed|Both}
+      allowWrite: "", // {Yes|No}
+      AllowDelete: "", // {Yes|No|Prompt}
+      clobber: "",
+      errorlevel: "", // {Yes|No|Prompt}
+      map: "", // <file path>
+      nologo: "",
+      log: "", // <file path>
+      sourceLoc: "", // <string>
+      localize: ""
+    },
+    solutionFile: ""
   };
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
+  browseForSolutionFile(e) {
+    dialog.showOpenDialog(fileNames => {
+      // fileNames is an array that contains all the selected
+      if (fileNames === undefined) {
+        console.log("No file selected");
+        return;
+      } else {
+        console.log(fileNames[0]);
+        this.setState({ solutionFile: fileNames[0] });
+      }
+    });
+  }
+
+  unpackSolution() {
+    console.log(
+      "TODO write unpack solution. Needs to account for user options"
+    );
+    ipcRenderer.send("solution:unpack", this.state.solutionFile, "");
+  }
 
   render() {
     return (
@@ -48,19 +75,27 @@ class SolutionManagement extends React.Component {
                 <div>
                   <ItemGrid xs={12} sm={12}>
                     <CustomInput
-                      labelText="Solution Name"
-                      id="solution-disabled"
+                      labelText="Solution"
+                      id="solution"
                       formControlProps={{
                         fullWidth: true
                       }}
                       inputProps={{
+                        value: this.state.solutionFile.split("\\").pop(),
                         disabled: true
                       }}
                     />
                   </ItemGrid>
                 </div>
               }
-              footer={<Button color="primary">Browse</Button>}
+              footer={
+                <Button
+                  color="primary"
+                  onClick={this.browseForSolutionFile.bind(this)}
+                >
+                  Browse
+                </Button>
+              }
             />
           </ItemGrid>
           <ItemGrid xs={12} sm={12} md={12}>
@@ -87,7 +122,9 @@ function SettingsTab(props) {
           <CustomSelect
             labelText="Action"
             inputProps={{
-              id: "action-select"
+              id: "action-select",
+              name: "packagersettings.action",
+              onchange: packagerSettings.action
             }}
             formControlProps={{
               fullWidth: true
@@ -188,7 +225,7 @@ function SettingsTab(props) {
         <ItemGrid xs={12} sm={12} md={12}>
           <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
           <CustomInput
-            labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
+            labelText="Test"
             id="about-me"
             formControlProps={{
               fullWidth: true
