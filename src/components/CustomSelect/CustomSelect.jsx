@@ -19,7 +19,11 @@ class CustomSelect extends React.Component {
   };
 
   handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+    this.setState({ selectedValue: event.target.value });
+
+    // Ignore lifting state if not defined
+    if (this.props.handleStateLift)
+      this.props.handleStateLift([name], event.target);
   };
 
   render() {
@@ -69,7 +73,7 @@ class CustomSelect extends React.Component {
         <Select
           native
           value={this.state.selectedValue}
-          onChange={this.handleChange("selectedValue")}
+          onChange={this.handleChange(inputProps.name)}
           {...inputProps}
         >
           {menu}

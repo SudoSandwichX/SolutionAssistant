@@ -25,6 +25,25 @@ const styles = theme => ({
   }
 });
 
+// Allow dynamics tab building.
+
+// Example Usage
+/*
+    <TabsWrappedLabel
+              tabs={[
+                {
+                  id: 1,
+                  title: "General",
+                  content: "General Tab!"
+                },
+                {
+                  id: 2,
+                  title: "Packager Settings",
+                  content: SettingsTab(this.props) // This is a functional component. Passing props to allow for state lifting
+                }
+              ]}
+            />
+*/
 class TabsWrappedLabel extends React.Component {
   state = {
     value: 1
@@ -42,13 +61,17 @@ class TabsWrappedLabel extends React.Component {
     const tab = (
       <AppBar position="static" color="default">
         <Tabs value={value} onChange={this.handleChange}>
-          {this.props.tabs.map(tab => <Tab value={tab.id} label={tab.title} />)}
+          {this.props.tabs.map(tab => (
+            <Tab key={tab.id.toString()} value={tab.id} label={tab.title} />
+          ))}
         </Tabs>
       </AppBar>
     );
     const content = tabs.map(tab => (
-      <React.Fragment>
-        {value === tab.id && <TabContainer> {tab.content}</TabContainer>}
+      <React.Fragment key={tab.id.toString()}>
+        {value === tab.id && (
+          <TabContainer key={tab.id.toString()}> {tab.content}</TabContainer>
+        )}
       </React.Fragment>
     ));
 

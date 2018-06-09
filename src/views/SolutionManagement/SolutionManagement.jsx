@@ -26,7 +26,6 @@ const { dialog } = electron.remote;
 class SolutionManagement extends React.Component {
   constructor(props) {
     super(props);
-    this.onUpdatePackagerSettings = this.onUpdatePackagerSettings.bind(this);
   }
   state = {
     solutionFile: ""
@@ -56,35 +55,19 @@ class SolutionManagement extends React.Component {
     ipcRenderer.send("solution:unpack", this.state.solutionFile, "");
   }
 
-  onUpdatePackagerSettings() {
+  viewProps() {
     console.log(this.props);
-
-    // Modifying partial object shrinks object in state.
-    // TO-DO set values from state.
-    // How to handle state from function in case of tabs?
-    this.props.onUpdatePackagerSettings({
-      action: "Pack" // {Extract|Pack}
-      /*
-      zipfile: "", // <file path>
-      folder: "", // <folder path>
-      packageType: "", // {Unmanaged|Managed|Both}
-      allowWrite: "", // {Yes|No}
-      allowDelete: "", // {Yes|No|Prompt}
-      clobber: "",
-      errorlevel: "", // {Yes|No|Prompt}
-      map: "", // <file path>
-      nologo: "",
-      log: "", // <file path>
-      sourceLoc: "", // <string>
-      localize: ""*/
-    });
   }
 
   render() {
     return (
       <div>
-        <button onClick={this.onUpdatePackagerSettings}>Update Settings</button>
-        <div> {this.props.packagerSettings.action} </div>
+        <button onClick={this.viewProps.bind(this)}> View Props </button>
+        <div>
+          {" "}
+          {this.props.packagerSettings.action},{" "}
+          {this.props.packagerSettings.packageType}{" "}
+        </div>
         <Grid container>
           <ItemGrid xs={12} sm={12} md={4}>
             <RegularCard
@@ -118,7 +101,20 @@ class SolutionManagement extends React.Component {
             />
           </ItemGrid>
           <ItemGrid xs={12} sm={12} md={12}>
-            <TabsWrappedLabel tabs={tabs} />
+            <TabsWrappedLabel
+              tabs={[
+                {
+                  id: 1,
+                  title: "General",
+                  content: "General Tab!"
+                },
+                {
+                  id: 2,
+                  title: "Packager Settings",
+                  content: SettingsTab(this.props)
+                }
+              ]}
+            />
           </ItemGrid>
         </Grid>
       </div>
@@ -126,7 +122,7 @@ class SolutionManagement extends React.Component {
   }
 }
 
-SolutionManagement.PropTypes = {
+SolutionManagement.propTypes = {
   onUpdatePackagerSettings: PropTypes.func.isRequired
 };
 
@@ -143,14 +139,14 @@ export default connect(
   mapActionsToProps
 )(SolutionManagement);
 
-const tabs = [
-  { id: 1, title: "General", content: "General Tab!" },
-  { id: 2, title: "Packager Settings", content: SettingsTab() }
-];
-
-// Cant have state unless it's a class but cannot pass class in JSON object
-// Can onChange call prop in parent class?
+// Build for packager settings tab
 function SettingsTab(props) {
+  // Handle updating the state of children in the settings tab
+  const updateState = (name, target) => {
+    props.onUpdatePackagerSettings({
+      [name]: target[target.value].textContent
+    });
+  };
   return (
     <div>
       <Grid container>
@@ -161,6 +157,7 @@ function SettingsTab(props) {
               id: "action-select",
               name: "action"
             }}
+            handleStateLift={updateState}
             formControlProps={{
               fullWidth: true
             }}
@@ -175,8 +172,10 @@ function SettingsTab(props) {
           <CustomSelect
             labelText="Package Type"
             inputProps={{
-              id: "packageType-select"
+              id: "packageType-select",
+              name: "packageType"
             }}
+            handleStateLift={updateState}
             formControlProps={{
               fullWidth: true
             }}
