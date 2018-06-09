@@ -16,8 +16,8 @@ const initialState = {
   localize: ""
 };
 
+// Must set action value to exact path. Be mindful of the action payload past 
 export default function packagerSettingsReducer(state = initialState, action) {
-  debugger;
   switch (action.type) {
     case UPDATE_PACKAGER_SETTINGS:
       return {

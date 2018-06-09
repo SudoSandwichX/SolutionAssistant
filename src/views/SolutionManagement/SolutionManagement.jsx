@@ -58,8 +58,13 @@ class SolutionManagement extends React.Component {
 
   onUpdatePackagerSettings() {
     console.log(this.props);
+
+    // Modifying partial object shrinks object in state.
+    // TO-DO set values from state.
+    // How to handle state from function in case of tabs?
     this.props.onUpdatePackagerSettings({
-      action: "Pack", // {Extract|Pack}
+      action: "Pack" // {Extract|Pack}
+      /*
       zipfile: "", // <file path>
       folder: "", // <folder path>
       packageType: "", // {Unmanaged|Managed|Both}
@@ -71,7 +76,7 @@ class SolutionManagement extends React.Component {
       nologo: "",
       log: "", // <file path>
       sourceLoc: "", // <string>
-      localize: ""
+      localize: ""*/
     });
   }
 
@@ -112,7 +117,9 @@ class SolutionManagement extends React.Component {
               }
             />
           </ItemGrid>
-          <ItemGrid xs={12} sm={12} md={12} />
+          <ItemGrid xs={12} sm={12} md={12}>
+            <TabsWrappedLabel tabs={tabs} />
+          </ItemGrid>
         </Grid>
       </div>
     );
@@ -123,7 +130,6 @@ SolutionManagement.PropTypes = {
   onUpdatePackagerSettings: PropTypes.func.isRequired
 };
 
-//<TabsWrappedLabel tabs={tabs} />
 const mapStateToProps = state => ({
   packagerSettings: state.packagerSettings
 });
@@ -142,6 +148,8 @@ const tabs = [
   { id: 2, title: "Packager Settings", content: SettingsTab() }
 ];
 
+// Cant have state unless it's a class but cannot pass class in JSON object
+// Can onChange call prop in parent class?
 function SettingsTab(props) {
   return (
     <div>
@@ -151,7 +159,7 @@ function SettingsTab(props) {
             labelText="Action"
             inputProps={{
               id: "action-select",
-              name: "packagersettings.action"
+              name: "action"
             }}
             formControlProps={{
               fullWidth: true

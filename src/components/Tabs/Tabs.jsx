@@ -27,7 +27,7 @@ const styles = theme => ({
 
 class TabsWrappedLabel extends React.Component {
   state = {
-    myValue: 1
+    value: 1
   };
 
   handleChange = (event, value) => {
@@ -38,28 +38,24 @@ class TabsWrappedLabel extends React.Component {
 
   render() {
     const { classes, tabs } = this.props;
-    const { myValue } = this.state;
+    const { value } = this.state;
     const tab = (
       <AppBar position="static" color="default">
-        <Tabs value={myValue} onChange={this.handleChange}>
-          {this.props.tabs.map((tab, i) => (
-            <Tab key={i} value={tab.id} label={tab.title} />
-          ))}
+        <Tabs value={value} onChange={this.handleChange}>
+          {this.props.tabs.map(tab => <Tab value={tab.id} label={tab.title} />)}
         </Tabs>
       </AppBar>
     );
-    const content = tabs.map((tab, i) => (
+    const content = tabs.map(tab => (
       <React.Fragment>
-        {myValue === tab.id && (
-          <TabContainer key={i}> {tab.content}</TabContainer>
-        )}
+        {value === tab.id && <TabContainer> {tab.content}</TabContainer>}
       </React.Fragment>
     ));
 
     return (
       <div className={classes.root}>
         <AppBar position="static">
-          <Tabs value={myValue} onChange={this.handleChange}>
+          <Tabs value={value} onChange={this.handleChange}>
             {tab}
           </Tabs>
         </AppBar>
