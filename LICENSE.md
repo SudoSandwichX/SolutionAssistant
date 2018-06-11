@@ -1,6 +1,8 @@
 MIT License
 
-Copyright (c) 2018 Creative Tim, Paul Breuler
+FREE MATERIAL-UI ADMIN TEMPLATE Copyright (c) Creative Tim under MIT License. Check out https://www.creative-tim.com/product/material-dashboard-react if you want to use the template for your project and for more info about template.
+
+Copyright (c) 2018 Paul Breuler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
