@@ -11,7 +11,7 @@ import {
   InputAdornment,
   IconButton
 } from "@material-ui/core";
-import { Help } from "@material-ui/icons";
+import { Folder } from "@material-ui/icons";
 import {
   RegularCard,
   Button,
@@ -33,10 +33,12 @@ class SolutionManagement extends React.Component {
     super(props);
   }
   state = {
-    solutionFile: ""
+    solutionFile: "",
+    folder: ""
   };
 
   handleChange = event => {
+    debugger;
     this.setState({ [event.target.name]: event.target.value });
   };
 
@@ -60,7 +62,12 @@ class SolutionManagement extends React.Component {
     console.log(
       "TODO write unpack solution. Needs to account for user options"
     );
-    ipcRenderer.send("solution:unpack", this.state.solutionFile, "");
+    debugger;
+    ipcRenderer.send(
+      "solution:unpack",
+      this.props.packagerSettings.zipFile,
+      this.props.packagerSettings.folder
+    );
   }
 
   viewProps() {
@@ -73,6 +80,12 @@ class SolutionManagement extends React.Component {
         <Tooltip title="ToolTip doesn't work in tabs :'(" placement="top-start">
           <button onClick={this.viewProps.bind(this)}> View Props </button>
         </Tooltip>
+        <Button color="primary" onClick={this.unpackSolution.bind(this)}>
+          {this.props.packagerSettings.action === "extract"
+            ? "Extract "
+            : "Pack "}
+          Solution
+        </Button>
         <div>
           {this.props.packagerSettings.action},
           {this.props.packagerSettings.packageType},
@@ -132,7 +145,7 @@ class SolutionManagement extends React.Component {
                 {
                   id: 2,
                   title: "Packager Settings",
-                  content: SettingsTab(this.props)
+                  content: SettingsTab(this.props, this.handleChange)
                 }
               ]}
             />
@@ -171,13 +184,14 @@ export default connect(
 */
 
 // Build for packager settings tab
-function SettingsTab(props) {
+function SettingsTab(props, handleChange) {
   // Handle updating the state of children in the settings tab
   const updateState = (name, target) => {
     props.onUpdatePackagerSetting({
       [name]: target.value
     });
   };
+
   return (
     <div>
       <Grid container>
@@ -297,19 +311,10 @@ function SettingsTab(props) {
           />
         </ItemGrid>
         <ItemGrid xs={12} sm={12} md={6}>
-          <CustomInput
-            labelText="Folder"
-            id="folder-input"
+          <FolderInput
             handleStateLift={updateState}
-            formControlProps={{
-              fullWidth: true
-            }}
-            inputProps={{
-              name: "folder"
-            }}
-            labelProps={{
-              required: true
-            }}
+            folder={props.packagerSettings.folder}
+            reduxState={props.onUpdatePackagerSetting}
           />
         </ItemGrid>
         <ItemGrid xs={12} sm={12} md={6}>
@@ -371,4 +376,63 @@ function SettingsTab(props) {
       </Grid>
     </div>
   );
+}
+
+class FolderInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      folder: props.folder
+    };
+  }
+  handleChange = event => {
+    debugger;
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  browseForFolder = e => {
+    dialog.showOpenDialog({ properties: ["openDirectory"] }, fileNames => {
+      // fileNames is an array that contains all the selected
+      if (fileNames === undefined) {
+        console.log("No file selected");
+        return;
+      } else {
+        this.setState({ folder: fileNames[0] });
+        console.log(fileNames[0]);
+        this.props.reduxState({
+          folder: fileNames[0]
+        });
+      }
+    });
+  };
+
+  render() {
+    const { handleStateLift, reduxState } = this.props;
+
+    return (
+      <CustomInput
+        labelText="Folder"
+        id="folder-input"
+        handleStateLift={handleStateLift}
+        formControlProps={{
+          fullWidth: true
+        }}
+        inputProps={{
+          name: "folder",
+          onChange: this.handleChange.bind(this),
+          value: this.state.folder
+        }}
+        labelProps={{
+          required: true
+        }}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton aria-label="Browse">
+              <Folder onClick={this.browseForFolder.bind(this)} />
+            </IconButton>
+          </InputAdornment>
+        }
+      />
+    );
+  }
 }

@@ -180,11 +180,11 @@ ipcMain.on("solution:unpack", function(e, filePath, repoPath) {
 
   let cmd = `${path.dirname(
     __dirname
-  )}\\assets\\powershell\\SolutionPackager.exe /action:Extract /zipFile: ${filePath} /folder:`;
+  )}\\assets\\powershell\\SolutionPackager.exe /action:Extract /zipFile: ${filePath} /folder: `;
   if (!repoPath || repoPath === "") {
     cmd += `${path.dirname(__dirname)}\\assets\\solutionOutput`;
   } else {
-    cmd += `${repoPath}`;
+    cmd += `\"${repoPath}\"`;
   }
 
   ps.addCommand(cmd);
