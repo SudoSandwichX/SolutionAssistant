@@ -5,8 +5,13 @@ import {
   InputLabel,
   FormControl,
   MenuItem,
-  Select
+  Select,
+  Tooltip,
+  FormHelperText,
+  InputAdornment,
+  IconButton
 } from "@material-ui/core";
+import { Help } from "@material-ui/icons";
 import {
   RegularCard,
   Button,
@@ -44,6 +49,9 @@ class SolutionManagement extends React.Component {
       } else {
         console.log(fileNames[0]);
         this.setState({ solutionFile: fileNames[0] });
+        this.props.onUpdatePackagerSettings({
+          zipFile: fileNames[0]
+        });
       }
     });
   }
@@ -62,11 +70,23 @@ class SolutionManagement extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.viewProps.bind(this)}> View Props </button>
+        <Tooltip title="ToolTip doesn't work in tabs :'(" placement="top-start">
+          <button onClick={this.viewProps.bind(this)}> View Props </button>
+        </Tooltip>
         <div>
-          {" "}
-          {this.props.packagerSettings.action},{" "}
-          {this.props.packagerSettings.packageType}{" "}
+          {this.props.packagerSettings.action},
+          {this.props.packagerSettings.packageType},
+          {this.props.packagerSettings.zipFile},
+          {this.props.packagerSettings.folder},
+          {this.props.packagerSettings.allowWrite},
+          {this.props.packagerSettings.allowDelete},
+          {this.props.packagerSettings.clobber},
+          {this.props.packagerSettings.errorLevel},
+          {this.props.packagerSettings.map},
+          {this.props.packagerSettings.log},
+          {this.props.packagerSettings.nologo},
+          {this.props.packagerSettings.sourceLoc},
+          {this.props.packagerSettings.localize}
         </div>
         <Grid container>
           <ItemGrid xs={12} sm={12} md={4}>
@@ -84,7 +104,8 @@ class SolutionManagement extends React.Component {
                       }}
                       inputProps={{
                         value: this.state.solutionFile.split("\\").pop(),
-                        disabled: true
+                        disabled: true,
+                        name: "zipFile"
                       }}
                     />
                   </ItemGrid>
@@ -139,36 +160,49 @@ export default connect(
   mapActionsToProps
 )(SolutionManagement);
 
+/*
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton aria-label="Toggle password visibility">
+                  <Help />
+                </IconButton>
+              </InputAdornment>
+            }
+*/
+
 // Build for packager settings tab
 function SettingsTab(props) {
   // Handle updating the state of children in the settings tab
   const updateState = (name, target) => {
     props.onUpdatePackagerSettings({
-      [name]: target[target.value].textContent
+      [name]: target.value
     });
   };
   return (
     <div>
       <Grid container>
-        <ItemGrid xs={12} sm={12} md={3}>
+        <ItemGrid xs={12} sm={12} md={2}>
           <CustomSelect
             labelText="Action"
             inputProps={{
               id: "action-select",
               name: "action"
             }}
+            labelProps={{
+              required: true
+            }}
             handleStateLift={updateState}
             formControlProps={{
               fullWidth: true
             }}
             menuItems={[
-              { value: 0, text: "" },
-              { value: 1, text: "Extract" },
-              { value: 2, text: "Pack" }
+              { value: "", text: "" },
+              { value: "extract", text: "Extract" },
+              { value: "pack", text: "Pack" }
             ]}
           />
         </ItemGrid>
-        <ItemGrid xs={12} sm={12} md={3}>
+        <ItemGrid xs={12} sm={12} md={2}>
           <CustomSelect
             labelText="Package Type"
             inputProps={{
@@ -180,94 +214,158 @@ function SettingsTab(props) {
               fullWidth: true
             }}
             menuItems={[
-              { value: 0, text: "" },
-              { value: 1, text: "Unmanaged" },
-              { value: 2, text: "Managed" },
-              { value: 2, text: "Both" }
+              { value: "", text: "" },
+              { value: "unmanaged", text: "Unmanaged" },
+              { value: "managed", text: "Managed" },
+              { value: "both", text: "Both" }
             ]}
           />
         </ItemGrid>
-        <ItemGrid xs={12} sm={12} md={3}>
-          <CustomInput
-            labelText="Username"
-            id="username"
+        <ItemGrid xs={12} sm={12} md={2}>
+          <CustomSelect
+            labelText="Allow Write"
+            inputProps={{
+              id: "allowWrite-select",
+              name: "allowWrite"
+            }}
+            handleStateLift={updateState}
             formControlProps={{
               fullWidth: true
             }}
+            menuItems={[
+              { value: "", text: "" },
+              { value: "yes", text: "Yes" },
+              { value: "no", text: "No" }
+            ]}
           />
         </ItemGrid>
-        <ItemGrid xs={12} sm={12} md={4}>
-          <CustomInput
-            labelText="Email address"
-            id="email-address"
+        <ItemGrid xs={12} sm={12} md={2}>
+          <CustomSelect
+            labelText="Allow Delete"
+            inputProps={{
+              id: "allowDelete-select",
+              name: "allowDelete"
+            }}
+            handleStateLift={updateState}
             formControlProps={{
               fullWidth: true
             }}
+            menuItems={[
+              { value: "", text: "" },
+              { value: "yes", text: "Yes" },
+              { value: "no", text: "No" },
+              { value: "prompt", text: "Prompt" }
+            ]}
           />
         </ItemGrid>
-      </Grid>
-      <Grid container>
+        <ItemGrid xs={12} sm={12} md={2}>
+          <CustomSelect
+            labelText="Clobber"
+            inputProps={{
+              id: "clobber-select",
+              name: "clobber"
+            }}
+            handleStateLift={updateState}
+            formControlProps={{
+              fullWidth: true
+            }}
+            menuItems={[
+              { value: "", text: "" },
+              { value: "/clobber", text: "Yes" }
+            ]}
+          />
+        </ItemGrid>
+        <ItemGrid xs={12} sm={12} md={2}>
+          <CustomSelect
+            labelText="Error Level"
+            inputProps={{
+              id: "errorLevel-select",
+              name: "errorLevel"
+            }}
+            handleStateLift={updateState}
+            formControlProps={{
+              fullWidth: true
+            }}
+            menuItems={[
+              { value: "", text: "" },
+              { value: "off", text: "Off" },
+              { value: "error", text: "Error" },
+              { value: "warning", text: "Warning" },
+              { value: "info", text: "Info" },
+              { value: "verbose", text: "Verbose" }
+            ]}
+          />
+        </ItemGrid>
         <ItemGrid xs={12} sm={12} md={6}>
           <CustomInput
-            labelText="First Name"
-            id="first-name"
-            formControlProps={{
-              fullWidth: true
-            }}
-          />
-        </ItemGrid>
-        <ItemGrid xs={12} sm={12} md={6}>
-          <CustomInput
-            labelText="Last Name"
-            id="last-name"
-            formControlProps={{
-              fullWidth: true
-            }}
-          />
-        </ItemGrid>
-      </Grid>
-      <Grid container>
-        <ItemGrid xs={12} sm={12} md={4}>
-          <CustomInput
-            labelText="City"
-            id="city"
-            formControlProps={{
-              fullWidth: true
-            }}
-          />
-        </ItemGrid>
-        <ItemGrid xs={12} sm={12} md={4}>
-          <CustomInput
-            labelText="Country"
-            id="country"
-            formControlProps={{
-              fullWidth: true
-            }}
-          />
-        </ItemGrid>
-        <ItemGrid xs={12} sm={12} md={4}>
-          <CustomInput
-            labelText="Postal Code"
-            id="postal-code"
-            formControlProps={{
-              fullWidth: true
-            }}
-          />
-        </ItemGrid>
-      </Grid>
-      <Grid container>
-        <ItemGrid xs={12} sm={12} md={12}>
-          <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-          <CustomInput
-            labelText="Test"
-            id="about-me"
+            labelText="Folder"
+            id="folder-input"
+            handleStateLift={updateState}
             formControlProps={{
               fullWidth: true
             }}
             inputProps={{
-              multiline: true,
-              rows: 5
+              name: "folder"
             }}
+            labelProps={{
+              required: true
+            }}
+          />
+        </ItemGrid>
+        <ItemGrid xs={12} sm={12} md={6}>
+          <CustomInput
+            labelText="Map"
+            id="map-input"
+            handleStateLift={updateState}
+            formControlProps={{
+              fullWidth: true
+            }}
+            inputProps={{
+              name: "map"
+            }}
+          />
+        </ItemGrid>
+        <ItemGrid xs={12} sm={12} md={6}>
+          <CustomInput
+            labelText="Log"
+            id="log-input"
+            handleStateLift={updateState}
+            formControlProps={{
+              fullWidth: true
+            }}
+            inputProps={{
+              name: "log"
+            }}
+          />
+        </ItemGrid>
+        <ItemGrid xs={12} sm={12} md={4}>
+          <CustomInput
+            labelText="SourceLoc"
+            id="sourceLoc-input"
+            handleStateLift={updateState}
+            formControlProps={{
+              fullWidth: true
+            }}
+            inputProps={{
+              name: "sourceLoc"
+            }}
+          />
+        </ItemGrid>
+        <ItemGrid xs={12} sm={12} md={2}>
+          <CustomSelect
+            labelText="Localize"
+            inputProps={{
+              id: "localize-select",
+              name: "localize"
+            }}
+            handleStateLift={updateState}
+            formControlProps={{
+              fullWidth: true
+            }}
+            menuItems={[
+              { value: "", text: "" },
+              { value: "/localize", text: "Yes" }
+            ]}
           />
         </ItemGrid>
       </Grid>
