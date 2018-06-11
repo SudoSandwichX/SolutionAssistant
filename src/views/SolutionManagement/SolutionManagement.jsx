@@ -21,7 +21,7 @@ import {
   TabsWrappedLabel
 } from "components";
 import { connect } from "react-redux";
-import { updatePackagerSettings } from "../../actions/packagerSettingsActions";
+import { updatePackagerSetting } from "../../actions/packagerSettingsActions";
 
 const electron = window.require("electron");
 const fs = electron.remote.require("fs");
@@ -49,7 +49,7 @@ class SolutionManagement extends React.Component {
       } else {
         console.log(fileNames[0]);
         this.setState({ solutionFile: fileNames[0] });
-        this.props.onUpdatePackagerSettings({
+        this.props.onUpdatePackagerSetting({
           zipFile: fileNames[0]
         });
       }
@@ -144,7 +144,7 @@ class SolutionManagement extends React.Component {
 }
 
 SolutionManagement.propTypes = {
-  onUpdatePackagerSettings: PropTypes.func.isRequired
+  onUpdatePackagerSetting: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -152,7 +152,7 @@ const mapStateToProps = state => ({
 });
 
 const mapActionsToProps = {
-  onUpdatePackagerSettings: updatePackagerSettings
+  onUpdatePackagerSetting: updatePackagerSetting
 };
 
 export default connect(
@@ -174,7 +174,7 @@ export default connect(
 function SettingsTab(props) {
   // Handle updating the state of children in the settings tab
   const updateState = (name, target) => {
-    props.onUpdatePackagerSettings({
+    props.onUpdatePackagerSetting({
       [name]: target.value
     });
   };

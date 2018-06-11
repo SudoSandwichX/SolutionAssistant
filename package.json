@@ -11,6 +11,7 @@
     "classnames": "2.2.5",
     "electron": "^2.0.2",
     "electron-log": "^2.2.14",
+    "immutability-helper": "^2.7.0",
     "nedb": "^1.8.0",
     "node-powershell": "^3.3.1",
     "npm-run-all": "4.1.2",
