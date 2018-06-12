@@ -175,16 +175,18 @@ ipcMain.on("settings:update", function(e, settings) {
 // code. You can also put them in separate files and require them here.
 
 // Catch solution:unpack
-ipcMain.on("solution:unpack", function(e, filePath, repoPath) {
-  log.info(`Dynamics 365 solution to unpack: ${filePath}`);
+ipcMain.on("solution-packager", function(e, packagersettings) {
+  log.info(`Dynamics 365 solution to unpack: ${packagersettings.zipFile}`);
 
   let cmd = `${path.dirname(
     __dirname
-  )}\\assets\\powershell\\SolutionPackager.exe /action:Extract /zipFile: ${filePath} /folder: `;
-  if (!repoPath || repoPath === "") {
+  )}\\assets\\powershell\\SolutionPackager.exe /action:Extract /zipFile: ${
+    packagersettings.zipFile
+  } /folder: `;
+  if (!packagersettings.folder || packagersettings.folder === "") {
     cmd += `${path.dirname(__dirname)}\\assets\\solutionOutput`;
   } else {
-    cmd += `\"${repoPath}\"`;
+    cmd += `\"${packagersettings.folder}\"`;
   }
 
   ps.addCommand(cmd);

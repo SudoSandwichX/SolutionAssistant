@@ -1,23 +1,18 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { Grid, Tooltip } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { RegularCard, Button, CustomInput, ItemGrid } from "components";
 import { connect } from "react-redux";
 import { updatePackagerSetting } from "../../actions/packagerSettingsActions";
 import SolutionManagerTabs from "./SolutionManagerTabs";
 
 const electron = window.require("electron");
-const fs = electron.remote.require("fs");
 const ipcRenderer = electron.ipcRenderer;
 const { dialog } = electron.remote;
 
 class SolutionManagement extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   state = {
-    solutionFile: "",
-    folder: ""
+    solutionFile: ""
   };
 
   handleChange = event => {
@@ -45,15 +40,7 @@ class SolutionManagement extends React.Component {
       "TODO write unpack solution. Needs to account for user options"
     );
     debugger;
-    ipcRenderer.send(
-      "solution:unpack",
-      this.props.packagerSettings.zipFile,
-      this.props.packagerSettings.folder
-    );
-  }
-
-  viewProps() {
-    console.log(this.props);
+    ipcRenderer.send("solution-packager", this.props.packagerSettings);
   }
 
   render() {
@@ -63,7 +50,7 @@ class SolutionManagement extends React.Component {
           <ItemGrid xs={12} sm={12} md={4}>
             <RegularCard
               cardTitle="Solution"
-              cardSubtitle="Select a solution to begin"
+              cardSubtitle="Browse for a solution to begin"
               content={
                 <div>
                   <ItemGrid xs={12} sm={12}>

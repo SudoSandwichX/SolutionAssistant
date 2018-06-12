@@ -13,8 +13,8 @@ const dashboardRoutes = [
   },
   {
     path: "/solution",
-    sidebarName: "Solution Management",
-    navbarName: "Solution Management",
+    sidebarName: "Solution Packager",
+    navbarName: "Solution Packager",
     icon: Folder,
     component: SolutionManagement
   },

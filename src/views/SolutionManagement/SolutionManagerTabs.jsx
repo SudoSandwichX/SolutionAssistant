@@ -5,30 +5,11 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
-import {
-  Grid,
-  InputLabel,
-  FormControl,
-  MenuItem,
-  Select,
-  Tooltip,
-  FormHelperText,
-  InputAdornment,
-  IconButton
-} from "@material-ui/core";
+import { Grid, InputAdornment, IconButton } from "@material-ui/core";
 import { Folder } from "@material-ui/icons";
-import {
-  RegularCard,
-  Button,
-  CustomInput,
-  ItemGrid,
-  CustomSelect
-} from "components";
-import { debug } from "util";
+import { CustomInput, ItemGrid, CustomSelect } from "components";
 
 const electron = window.require("electron");
-const fs = electron.remote.require("fs");
-const ipcRenderer = electron.ipcRenderer;
 const { dialog } = electron.remote;
 
 function TabContainer(props) {
