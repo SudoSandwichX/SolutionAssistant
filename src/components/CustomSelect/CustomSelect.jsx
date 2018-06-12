@@ -31,13 +31,14 @@ class CustomSelect extends React.Component {
       classes,
       formControlProps,
       labelText,
-      id,
       labelProps,
       inputProps,
       error,
       success,
       menuItems
     } = this.props;
+
+    const parentState = this.props.value;
 
     const labelClasses = cx({
       [" " + classes.labelRootError]: error,
@@ -72,7 +73,7 @@ class CustomSelect extends React.Component {
         ) : null}
         <Select
           native
-          value={this.state.selectedValue}
+          value={parentState ? parentState : this.state.selectedValue}
           onChange={this.handleChange(inputProps.name)}
           {...inputProps}
         >

@@ -28,6 +28,8 @@ class CustomInput extends React.Component {
       endAdornment
     } = this.props;
 
+    const parentState = this.props.value;
+
     const labelClasses = cx({
       [" " + classes.labelRootError]: error,
       [" " + classes.labelRootSuccess]: success && !error
@@ -55,6 +57,7 @@ class CustomInput extends React.Component {
           </InputLabel>
         ) : null}
         <Input
+          value={parentState}
           classes={{
             root: marginTop,
             disabled: classes.disabled,
