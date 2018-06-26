@@ -222,7 +222,6 @@ function buildPackagerCommand(packagersettings) {
   }
 
   cmd = solutoinPackagerPath + parameters;
-  //folder += `${path.dirname(__dirname)}\\assets\\solutionOutput`;
 
   return cmd;
 }
