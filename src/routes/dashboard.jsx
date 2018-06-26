@@ -3,14 +3,17 @@ import SolutionManagement from "../views/SolutionManagement/SolutionManagement.j
 
 import { Dashboard, Folder } from "@material-ui/icons";
 
+/*
+{
+  path: "/dashboard",
+  sidebarName: "Dashboard",
+  navbarName: "Dashboard",
+  icon: Dashboard,
+  component: DashboardPage
+},
+*/
+
 const dashboardRoutes = [
-  {
-    path: "/dashboard",
-    sidebarName: "Dashboard",
-    navbarName: "Dashboard",
-    icon: Dashboard,
-    component: DashboardPage
-  },
   {
     path: "/solution",
     sidebarName: "Solution Packager",
@@ -18,7 +21,7 @@ const dashboardRoutes = [
     icon: Folder,
     component: SolutionManagement
   },
-  { redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect" }
+  { redirect: true, path: "/", to: "/solution", navbarName: "Redirect" }
 ];
 
 export default dashboardRoutes;

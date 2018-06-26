@@ -1,9 +1,5 @@
-import {
-  UPDATE_SINGLE_PACKAGER_SETTING,
-  updatePackagerSetting
-} from "../actions/packagerSettingsActions";
+import { UPDATE_SINGLE_PACKAGER_SETTING } from "../actions/packagerSettingsActions";
 import update from "immutability-helper";
-import { debug } from "util";
 
 const initialState = {
   action: "extract", // {Extract|Pack}
@@ -26,7 +22,6 @@ export default function packagerSettingsReducer(
   state = initialState,
   { type, payload }
 ) {
-  debugger;
   switch (type) {
     case UPDATE_SINGLE_PACKAGER_SETTING:
       // Can you iterete in update?

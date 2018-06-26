@@ -11,9 +11,33 @@ const ipcRenderer = electron.ipcRenderer;
 const { dialog } = electron.remote;
 
 class SolutionManagement extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleError = this.handleError.bind(this);
+  }
+
   state = {
     solutionFile: ""
   };
+
+  componentDidMount() {
+    ipcRenderer.on("packager:output", err => {
+      debugger;
+      this.handleError(err);
+    });
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener("packager:output", err => {
+      debugger;
+      this.handleError(err);
+    });
+  }
+
+  handleError(err) {
+    debugger;
+    console.log(err);
+  }
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
@@ -35,11 +59,10 @@ class SolutionManagement extends React.Component {
     });
   }
 
-  unpackSolution() {
+  handleSolutionPackaging() {
     console.log(
       "TODO write unpack solution. Needs to account for user options"
     );
-    debugger;
     ipcRenderer.send("solution-packager", this.props.packagerSettings);
   }
 
@@ -79,7 +102,7 @@ class SolutionManagement extends React.Component {
                   </Button>
                   <Button
                     color="primary"
-                    onClick={this.unpackSolution.bind(this)}
+                    onClick={this.handleSolutionPackaging.bind(this)}
                   >
                     {this.props.packagerSettings.action === "extract"
                       ? "Extract "

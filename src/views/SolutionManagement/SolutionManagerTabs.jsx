@@ -8,9 +8,11 @@ import Typography from "@material-ui/core/Typography";
 import { Grid, InputAdornment, IconButton } from "@material-ui/core";
 import { Folder } from "@material-ui/icons";
 import { CustomInput, ItemGrid, CustomSelect } from "components";
+import { connect } from "react-redux";
 
 const electron = window.require("electron");
 const { dialog } = electron.remote;
+const ipcRenderer = electron.ipcRenderer;
 
 function TabContainer(props) {
   return (
@@ -78,7 +80,6 @@ class SolutionManagerTabs extends React.Component {
   };
 
   updateState = (name, target) => {
-    debugger;
     this.setState({
       [name]: target.value
     });
@@ -301,9 +302,7 @@ class SolutionManagerTabs extends React.Component {
         {value === 2 && (
           <TabContainer key={2}>
             <Grid container>
-              <ItemGrid xs={12} sm={12} md={2}>
-                <p> Test </p>
-              </ItemGrid>
+              <ItemGrid xs={12} sm={12} md={2} />
             </Grid>
           </TabContainer>
         )}

@@ -22,7 +22,6 @@ let ps = new shell({
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
-let packagerSettingsWin;
 
 function initializeApp() {
   // Create the browser window.
@@ -171,33 +170,24 @@ ipcMain.on("settings:update", function(e, settings) {
 });
 */
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
 // Catch solution:unpack
 ipcMain.on("solution-packager", function(e, packagersettings) {
   log.info(`Dynamics 365 solution to unpack: ${packagersettings.zipFile}`);
 
-  let cmd = `${path.dirname(
-    __dirname
-  )}\\assets\\powershell\\SolutionPackager.exe /action:Extract /zipFile: ${
-    packagersettings.zipFile
-  } /folder: `;
-  if (!packagersettings.folder || packagersettings.folder === "") {
-    cmd += `${path.dirname(__dirname)}\\assets\\solutionOutput`;
-  } else {
-    cmd += `\"${packagersettings.folder}\"`;
-  }
+  let cmd = buildPackagerCommand(packagersettings);
+  console.log(cmd);
 
   ps.addCommand(cmd);
   log.info(`Running PowerShell Command: ${cmd}`);
   ps.invoke()
     .then(output => {
       log.info(`\n${output}`);
+      win.webContents.send("packager:output", output);
       ps.dispose();
     })
     .catch(err => {
       log.error(err);
+      win.webContents.send("packager:output", err);
       ps.dispose();
     });
 
@@ -206,3 +196,33 @@ ipcMain.on("solution-packager", function(e, packagersettings) {
     console.log("Command complete");
   });
 });
+
+function buildPackagerCommand(packagersettings) {
+  let cmd = "";
+  let solutoinPackagerPath = `${path.dirname(
+    __dirname
+  )}\\assets\\powershell\\SolutionPackager.exe `;
+
+  let parameters = "";
+  let param = "";
+
+  for (var key in packagersettings) {
+    if (packagersettings[key] !== "" && packagersettings[key] !== undefined) {
+      switch (key) {
+        case "clobber":
+        case "localize":
+          param = `${packagersettings[key]} `;
+          break;
+        default:
+          param = `/${key} ${packagersettings[key]} `;
+          console.log(param);
+      }
+      parameters += param;
+    }
+  }
+
+  cmd = solutoinPackagerPath + parameters;
+  //folder += `${path.dirname(__dirname)}\\assets\\solutionOutput`;
+
+  return cmd;
+}

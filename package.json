@@ -37,9 +37,10 @@
     "electron": "electron ."
   },
   "devDependencies": {
-    "husky": "^0.14.3",
+    "devtron": "^1.4.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
+    "husky": "^0.14.3",
     "lint-staged": "^7.2.0",
     "prettier": "^1.13.5",
     "pretty-quick": "^1.6.0"
