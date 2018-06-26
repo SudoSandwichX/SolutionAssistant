@@ -5,6 +5,7 @@ import { RegularCard, Button, CustomInput, ItemGrid } from "components";
 import { connect } from "react-redux";
 import { updatePackagerSetting } from "../../actions/packagerSettingsActions";
 import SolutionManagerTabs from "./SolutionManagerTabs";
+const constants = require("../../assets/Strings.js");
 
 const electron = window.require("electron");
 const ipcRenderer = electron.ipcRenderer;
@@ -22,20 +23,17 @@ class SolutionManagement extends React.Component {
 
   componentDidMount() {
     ipcRenderer.on("packager:output", err => {
-      debugger;
       this.handleError(err);
     });
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener("packager:output", err => {
-      debugger;
       this.handleError(err);
     });
   }
 
   handleError(err) {
-    debugger;
     console.log(err);
   }
 
@@ -60,10 +58,21 @@ class SolutionManagement extends React.Component {
   }
 
   handleSolutionPackaging() {
-    console.log(
-      "TODO write unpack solution. Needs to account for user options"
-    );
-    ipcRenderer.send("solution-packager", this.props.packagerSettings);
+    let isValid = true;
+    let settings = this.props.packagerSettings;
+    if (settings.action === constants.EXTRACT) {
+      if (!settings.zipFile) {
+        console.log("No zip file!");
+        isValid = false;
+      }
+      if (!settings.folder) {
+        console.log("No folder for output!");
+        isValid = false;
+      }
+    }
+
+    if (isValid)
+      ipcRenderer.send("solution-packager", this.props.packagerSettings);
   }
 
   render() {

@@ -8,11 +8,9 @@ import Typography from "@material-ui/core/Typography";
 import { Grid, InputAdornment, IconButton } from "@material-ui/core";
 import { Folder } from "@material-ui/icons";
 import { CustomInput, ItemGrid, CustomSelect } from "components";
-import { connect } from "react-redux";
 
 const electron = window.require("electron");
 const { dialog } = electron.remote;
-const ipcRenderer = electron.ipcRenderer;
 
 function TabContainer(props) {
   return (
@@ -34,7 +32,6 @@ const styles = theme => ({
 });
 
 // Allow dynamics tab building.
-
 // Example Usage
 /*
     <TabsWrappedLabel
@@ -56,6 +53,7 @@ class SolutionManagerTabs extends React.Component {
   constructor(props) {
     super(props);
     this.updateState = this.updateState.bind(this);
+    this.validate = this.validate.bind(this);
 
     this.state = {
       value: 1,
@@ -71,7 +69,8 @@ class SolutionManagerTabs extends React.Component {
       nologo: props.packagerSettings.nologo,
       log: props.packagerSettings.log, // <file path>
       sourceLoc: props.packagerSettings.sourceLoc, // <string>
-      localize: props.packagerSettings.localize
+      localize: props.packagerSettings.localize,
+      invalidInput: false
     };
   }
 
@@ -94,9 +93,26 @@ class SolutionManagerTabs extends React.Component {
 
   buildTabContent(props) {}
 
+  validate() {
+    // true means invalid, so our conditions got reversed
+    console.log(this.state.folder.length === 0);
+    return {
+      folder: this.state.folder.length === 0
+      //password: folder.length === 0
+    };
+  }
+
   render() {
     const { classes } = this.props;
     const { value } = this.state;
+
+    const errors = this.validate();
+    const shouldMarkError = field => {
+      const hasError = errors[field];
+      //const shouldShow = this.state.touched[field];
+
+      return hasError ? true : false;
+    };
 
     return (
       <div className={classes.root}>
@@ -233,7 +249,8 @@ class SolutionManagerTabs extends React.Component {
               <ItemGrid xs={12} sm={12} md={6}>
                 <FolderInput
                   handleStateLift={this.updateState}
-                  folder={this.props.packagerSettings.folder}
+                  folder={this.state.folder}
+                  error={shouldMarkError("folder")}
                 />
               </ItemGrid>
               <ItemGrid xs={12} sm={12} md={6}>
@@ -324,9 +341,6 @@ class FolderInput extends React.Component {
       folder: props.folder
     };
   }
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
 
   browseForFolder = e => {
     dialog.showOpenDialog({ properties: ["openDirectory"] }, fileNames => {
@@ -348,22 +362,19 @@ class FolderInput extends React.Component {
   };
 
   render() {
-    const { handleStateLift } = this.props;
-    const parentState = this.props.parentState;
-
+    const { handleStateLift, error, folder } = this.props;
     return (
       <CustomInput
-        value={parentState}
         labelText="Folder"
         id="folder-input"
         handleStateLift={handleStateLift}
         formControlProps={{
-          fullWidth: true
+          fullWidth: true,
+          error: error
         }}
         inputProps={{
           name: "folder",
-          onChange: this.handleChange.bind(this),
-          value: this.state.folder
+          value: folder
         }}
         labelProps={{
           required: true
