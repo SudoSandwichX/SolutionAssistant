@@ -11,6 +11,7 @@ import { CustomInput, ItemGrid, CustomSelect } from "components";
 
 const electron = window.require("electron");
 const { dialog } = electron.remote;
+
 const constants = require("../../assets/Strings.js");
 
 function TabContainer(props) {
