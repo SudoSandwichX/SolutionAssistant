@@ -170,8 +170,28 @@ ipcMain.on("settings:update", function(e, settings) {
 });
 */
 
+ipcMain.on("packager:retrieveDefaultExtract", function(e) {
+  win.webContents.send("packager:defaultExtract", {
+    packagerSettings: {
+      action: "extract", // {Extract|Pack}
+      zipFile: "", // <file path>
+      folder: `${app.getAppPath()}\\assets\\solutionOutput`, // <folder path>
+      packageType: "", // {Unmanaged|Managed|Both}
+      allowWrite: "", // {Yes|No}
+      allowDelete: "", // {Yes|No|Prompt}
+      clobber: "",
+      errorLevel: "", // {Yes|No|Prompt}
+      map: "", // <file path>
+      nologo: "",
+      log: "", // <file path>
+      sourceLoc: "", // <string>
+      localize: ""
+    }
+  });
+});
+
 // Catch solution:unpack
-ipcMain.on("solution-packager", function(e, packagersettings) {
+ipcMain.on("packager", function(e, packagersettings) {
   log.info(`Dynamics 365 solution to unpack: ${packagersettings.zipFile}`);
 
   let cmd = buildPackagerCommand(packagersettings);

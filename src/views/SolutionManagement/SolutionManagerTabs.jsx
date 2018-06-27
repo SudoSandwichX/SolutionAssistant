@@ -11,7 +11,7 @@ import { CustomInput, ItemGrid, CustomSelect } from "components";
 
 const electron = window.require("electron");
 const { dialog } = electron.remote;
-
+const ipcRenderer = electron.ipcRenderer;
 const constants = require("../../assets/Strings.js");
 
 function TabContainer(props) {
@@ -56,6 +56,7 @@ class SolutionManagerTabs extends React.Component {
     super(props);
     this.updateState = this.updateState.bind(this);
     this.validate = this.validate.bind(this);
+    this.applySavedSettings = this.applySavedSettings.bind(this);
 
     this.state = {
       value: 1,
@@ -74,6 +75,38 @@ class SolutionManagerTabs extends React.Component {
       localize: props.packagerSettings.localize,
       invalidInput: false
     };
+  }
+
+  componentDidMount() {
+    // Apply saved settings loaded from electron main
+    ipcRenderer.on("packager:defaultExtract", (event, { packagerSettings }) => {
+      this.applySavedSettings(packagerSettings);
+    });
+
+    // Request default settings for extract. TODO Make buttons for default extract and pack?
+    ipcRenderer.send("packager:retrieveDefaultExtract");
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener(
+      "packager:defaultExtract",
+      (event, { packagerSettings }) => {
+        this.applySavedSettings(packagerSettings);
+      }
+    );
+  }
+
+  applySavedSettings(packagerSettings) {
+    let e;
+    let target = {
+      value: ""
+    };
+    for (e in packagerSettings) {
+      if (packagerSettings[e] !== "") {
+        target.value = packagerSettings[e];
+        this.updateState([e], target);
+      }
+    }
   }
 
   handleChange = event => {

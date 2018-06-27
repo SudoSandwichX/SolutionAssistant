@@ -71,8 +71,7 @@ class SolutionManagement extends React.Component {
       }
     }
 
-    if (isValid)
-      ipcRenderer.send("solution-packager", this.props.packagerSettings);
+    if (isValid) ipcRenderer.send("packager", this.props.packagerSettings);
   }
 
   render() {
