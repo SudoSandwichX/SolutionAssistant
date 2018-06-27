@@ -1,10 +1,18 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Grid } from "@material-ui/core";
-import { RegularCard, Button, CustomInput, ItemGrid } from "components";
+import {
+  RegularCard,
+  Button,
+  CustomInput,
+  ItemGrid,
+  Notification
+} from "components";
 import { connect } from "react-redux";
 import { updatePackagerSetting } from "../../actions/packagerSettingsActions";
+import { addNotification } from "../../actions/notificationActions";
 import SolutionManagerTabs from "./SolutionManagerTabs";
+
 const constants = require("../../assets/Strings.js");
 
 const electron = window.require("electron");
@@ -18,7 +26,8 @@ class SolutionManagement extends React.Component {
   }
 
   state = {
-    solutionFile: ""
+    solutionFile: "",
+    count: 0
   };
 
   componentDidMount() {
@@ -74,6 +83,13 @@ class SolutionManagement extends React.Component {
     if (isValid) ipcRenderer.send("packager", this.props.packagerSettings);
   }
 
+  showNotification = () => {
+    debugger;
+    console.log("Show Note clicked");
+
+    this.props.onAddNotification({ id: 1, message: "Test 2" });
+  };
+
   render() {
     return (
       <div>
@@ -111,6 +127,7 @@ class SolutionManagement extends React.Component {
                   <Button
                     color="primary"
                     onClick={this.handleSolutionPackaging.bind(this)}
+                    disabled={this.state.solutionFile.length === 0}
                   >
                     {this.props.packagerSettings.action === "extract"
                       ? "Extract "
@@ -127,6 +144,8 @@ class SolutionManagement extends React.Component {
               onUpdatePackagerSetting={this.props.onUpdatePackagerSetting}
             />
           </ItemGrid>
+          <Button onClick={this.showNotification.bind(this)}> Test </Button>
+          <Notification />
         </Grid>
       </div>
     );
@@ -142,7 +161,8 @@ const mapStateToProps = state => ({
 });
 
 const mapActionsToProps = {
-  onUpdatePackagerSetting: updatePackagerSetting
+  onUpdatePackagerSetting: updatePackagerSetting,
+  onAddNotification: addNotification
 };
 
 export default connect(

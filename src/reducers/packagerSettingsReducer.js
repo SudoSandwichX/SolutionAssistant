@@ -30,22 +30,6 @@ export default function packagerSettingsReducer(
           $set:
             payload.packagerSettings[Object.keys(payload.packagerSettings)[0]]
         }
-
-        /*  UPDATE MULTIPLE. Is there a better way? 
-        action: payload.packagerSettings.action ? payload.packagerSettings.action : state.action, 
-        packageType: payload.packagerSettings.packageType ? payload.packagerSettings.packageType : state.packageType, 
-        zipFile: payload.packagerSettings.zipFile ? payload.packagerSettings.zipFile : state.zipFile, 
-        folder: payload.packagerSettings.folder ? payload.packagerSettings.folder : state.folder, 
-        allowWrite: payload.packagerSettings.allowWrite ? payload.packagerSettings.allowWrite : state.allowWrite, 
-        allowDelete: payload.packagerSettings.allowDelete ? payload.packagerSettings.allowDelete : state.allowDelete, 
-        clobber: payload.packagerSettings.clobber ? payload.packagerSettings.clobber : state.clobber, 
-        errorLevel: payload.packagerSettings.errorLevel ? payload.packagerSettings.errorLevel : state.errorLevel, 
-        map: payload.packagerSettings.map ? payload.packagerSettings.map : state.map, 
-        log: payload.packagerSettings.log ? payload.packagerSettings.log : state.log, 
-        nologo: payload.packagerSettings.nologo ? payload.packagerSettings.nologo : state.nologo, 
-        sourceLoc: payload.packagerSettings.sourceLoc ? payload.packagerSettings.sourceLoc : state.sourceLoc, 
-        localize: payload.packagerSettings.localize ? payload.packagerSettings.localize : state.localize 
-      */
       });
     default:
       return state;
