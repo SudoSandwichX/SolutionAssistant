@@ -5,12 +5,11 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
-import { Grid, InputAdornment, IconButton } from "@material-ui/core";
-import { Folder } from "@material-ui/icons";
-import { CustomInput, ItemGrid, CustomSelect } from "components";
+import { Grid } from "@material-ui/core";
+
+import { CustomInput, ItemGrid, CustomSelect, FolderInput } from "components";
 
 const electron = window.require("electron");
-const { dialog } = electron.remote;
 const ipcRenderer = electron.ipcRenderer;
 const constants = require("../../assets/Strings.js");
 
@@ -98,13 +97,17 @@ class SolutionManagerTabs extends React.Component {
 
   applySavedSettings(packagerSettings) {
     let e;
-    let target = {
-      value: ""
+    let event = {
+      target: {
+        name: "",
+        value: ""
+      }
     };
     for (e in packagerSettings) {
       if (packagerSettings[e] !== "") {
-        target.value = packagerSettings[e];
-        this.updateState([e], target);
+        event.target.value = packagerSettings[e];
+        event.target.name = [e];
+        this.updateState(event);
       }
     }
   }
@@ -113,12 +116,12 @@ class SolutionManagerTabs extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  updateState = (name, target) => {
+  updateState = event => {
     this.setState({
-      [name]: target.value
+      [event.target.name]: event.target.value
     });
     this.props.onUpdatePackagerSetting({
-      [name]: target.value
+      [event.target.name]: event.target.value
     });
   };
 
@@ -130,7 +133,6 @@ class SolutionManagerTabs extends React.Component {
 
   validate() {
     // true means invalid, so our conditions got reversed
-    console.log(this.state.folder.length === 0);
     return {
       folder: this.state.folder.length === 0
       //password: folder.length === 0
@@ -284,6 +286,7 @@ class SolutionManagerTabs extends React.Component {
               </ItemGrid>
               <ItemGrid xs={12} sm={12} md={6}>
                 <FolderInput
+                  name="folder"
                   handleStateLift={this.updateState}
                   folder={this.state.folder}
                   error={shouldMarkError("folder")}
@@ -369,53 +372,3 @@ SolutionManagerTabs.propTypes = {
 };
 
 export default withStyles(styles)(SolutionManagerTabs);
-
-class FolderInput extends React.Component {
-  browseForFolder = e => {
-    dialog.showOpenDialog({ properties: ["openDirectory"] }, fileNames => {
-      // fileNames is an array that contains all the selected
-      if (fileNames === undefined) {
-        console.log("No file selected");
-        return;
-      } else {
-        let target = {
-          value: fileNames[0]
-        };
-        // Ignore lifting state if not defined
-        if (this.props.handleStateLift)
-          this.props.handleStateLift("folder", target);
-      }
-    });
-  };
-
-  // value prop should be passed from parent to ensure
-  // component is updated correctly
-  render() {
-    const { handleStateLift, error, folder } = this.props;
-    return (
-      <CustomInput
-        labelText="Folder"
-        id="folder-input"
-        handleStateLift={handleStateLift}
-        formControlProps={{
-          fullWidth: true,
-          error: error
-        }}
-        inputProps={{
-          name: "folder",
-          value: folder
-        }}
-        labelProps={{
-          required: true
-        }}
-        endAdornment={
-          <InputAdornment position="end">
-            <IconButton aria-label="Browse">
-              <Folder onClick={this.browseForFolder.bind(this)} />
-            </IconButton>
-          </InputAdornment>
-        }
-      />
-    );
-  }
-}

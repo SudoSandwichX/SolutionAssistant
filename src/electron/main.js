@@ -3,7 +3,6 @@ const url = require("url");
 const path = require("path");
 const log = require("electron-log");
 const fs = require("fs");
-
 const { app, BrowserWindow, ipcMain } = electron;
 
 const shell = require("node-powershell");
@@ -75,7 +74,7 @@ function setDefaultSettings() {
   let settings = {
     _id: "id1",
     restEndpoint: "https://contoso.api.crm.dynamics.com/api/data/v9.0/",
-    repoPath: `${path.dirname(__dirname)}\\assets\\solutionOutput`
+    repoPath: `${app.getAppPath()}\\output\\ExtractedSolution`
   };
 
   db.insert(settings, function(err, newSettings) {
@@ -175,7 +174,8 @@ ipcMain.on("packager:retrieveDefaultExtract", function(e) {
     packagerSettings: {
       action: "extract", // {Extract|Pack}
       zipFile: "", // <file path>
-      folder: `${app.getAppPath()}\\assets\\solutionOutput`, // <folder path>
+      zipFilePath: `${app.getAppPath()}\\output\\PackedSolution`,
+      folder: `${app.getAppPath()}\\output\\ExtractedSolution`, // <folder path>
       packageType: "", // {Unmanaged|Managed|Both}
       allowWrite: "", // {Yes|No}
       allowDelete: "", // {Yes|No|Prompt}
@@ -217,7 +217,7 @@ ipcMain.on("packager", function(e, packagersettings) {
   });
 });
 
-function buildPackagerCommand(packagersettings) {
+function buildPackagerCommand(packagerSettings) {
   let cmd = "";
   let solutoinPackagerPath = `${path.dirname(
     __dirname
@@ -226,15 +226,33 @@ function buildPackagerCommand(packagersettings) {
   let parameters = "";
   let param = "";
 
-  for (var key in packagersettings) {
-    if (packagersettings[key] !== "" && packagersettings[key] !== undefined) {
+  // If we are packing the solution combine zipFilePath and zipFile for command line arg
+  // Electron throws error when trying to use
+  if (packagerSettings.action === "pack") {
+    let zipFile = `${packagerSettings.zipFilePath}\\${
+      packagerSettings.zipFile
+    }`;
+    packagerSettings.zipFile = zipFile;
+
+    delete packagerSettings.zipFilePath;
+
+    // Add file extension if it's missing.
+    if (getFileExtension(packagerSettings.zipFile) === "") {
+      packagerSettings.zipFile += ".zip";
+    }
+  } else {
+    delete packagerSettings.zipFilePath;
+  }
+
+  for (var key in packagerSettings) {
+    if (packagerSettings[key] !== "" && packagerSettings[key] !== undefined) {
       switch (key) {
         case "clobber":
         case "localize":
-          param = `${packagersettings[key]} `;
+          param = `${packagerSettings[key]} `;
           break;
         default:
-          param = `/${key} ${packagersettings[key]} `;
+          param = `/${key} ${packagerSettings[key]} `;
           console.log(param);
       }
       parameters += param;
@@ -244,4 +262,8 @@ function buildPackagerCommand(packagersettings) {
   cmd = solutoinPackagerPath + parameters;
 
   return cmd;
+}
+
+function getFileExtension(filename) {
+  return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
 }

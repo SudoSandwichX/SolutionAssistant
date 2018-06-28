@@ -4,6 +4,7 @@ import update from "immutability-helper";
 const initialState = {
   action: "extract", // {Extract|Pack}
   zipFile: "", // <file path>
+  zipFilePath: "",
   folder: "", // <folder path>
   packageType: "", // {Unmanaged|Managed|Both}
   allowWrite: "", // {Yes|No}

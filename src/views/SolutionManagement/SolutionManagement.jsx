@@ -6,11 +6,15 @@ import {
   Button,
   CustomInput,
   ItemGrid,
-  Notification
+  Notification,
+  FolderInput
 } from "components";
 import { connect } from "react-redux";
 import { updatePackagerSetting } from "../../actions/packagerSettingsActions";
-import { addNotification } from "../../actions/notificationActions";
+import {
+  addNotification,
+  removeNotification
+} from "../../actions/notificationActions";
 import SolutionManagerTabs from "./SolutionManagerTabs";
 
 const constants = require("../../assets/Strings.js");
@@ -23,6 +27,8 @@ class SolutionManagement extends React.Component {
   constructor(props) {
     super(props);
     this.handleError = this.handleError.bind(this);
+    this.showNotification = this.showNotification.bind(this);
+    this.splitZipFileString = this.splitZipFileString.bind(this);
   }
 
   state = {
@@ -47,7 +53,9 @@ class SolutionManagement extends React.Component {
   }
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+    this.props.onUpdatePackagerSetting({
+      [event.target.name]: event.target.value
+    });
   };
 
   browseForSolutionFile(e) {
@@ -66,12 +74,30 @@ class SolutionManagement extends React.Component {
     });
   }
 
+  browseForOutputDirectory(e) {
+    dialog.showOpenDialog({ properties: ["openDirectory"] }, directory => {
+      // fileNames is an array that contains all the selected
+      if (directory === undefined) {
+        console.log("No directory selected");
+        return;
+      } else {
+        console.log(directory[0]);
+        this.setState({ solutionFile: directory[0] });
+        this.props.onUpdatePackagerSetting({
+          zipFile: directory[0]
+        });
+      }
+    });
+  }
+
   handleSolutionPackaging() {
     let isValid = true;
     let settings = this.props.packagerSettings;
     if (settings.action === constants.EXTRACT) {
       if (!settings.zipFile) {
-        console.log("No zip file!");
+        this.showNotification({
+          message: "No Solution Package selected!"
+        });
         isValid = false;
       }
       if (!settings.folder) {
@@ -80,36 +106,74 @@ class SolutionManagement extends React.Component {
       }
     }
 
+    if (settings.action === constants.PACK) {
+      if (!settings.zipFile) {
+        this.showNotification({
+          message: "Please provide a solution name"
+        });
+        isValid = false;
+      }
+    }
     if (isValid) ipcRenderer.send("packager", this.props.packagerSettings);
   }
 
-  showNotification = () => {
-    debugger;
+  splitZipFileString(str) {
+    let path = str.substring(0, str.lastIndexOf("\\"));
+    let file = this.props.packagerSettings.zipFile.split("\\").pop();
+    return { path, file };
+  }
+
+  showNotification = notification => {
     console.log("Show Note clicked");
 
-    this.props.onAddNotification({ id: 1, message: "Test 2" });
+    this.props.onAddNotification({
+      id: Date.now(),
+      message: notification.message,
+      open: true
+    });
   };
 
   render() {
     return (
       <div>
         <Grid container>
-          <ItemGrid xs={12} sm={12} md={4}>
+          <ItemGrid xs={12} sm={12} md={6}>
             <RegularCard
               cardTitle="Solution"
-              cardSubtitle="Browse for a solution to begin"
+              cardSubtitle={
+                this.props.packagerSettings.action === constants.EXTRACT
+                  ? "Browse for an existing solution to begin"
+                  : "Enter output path and the desired solution zip name"
+              }
               content={
                 <div>
+                  {this.props.packagerSettings.action === constants.PACK && (
+                    <ItemGrid xs={12} sm={12}>
+                      <FolderInput
+                        name="zipFilePath"
+                        handleStateLift={this.handleChange}
+                        folder={this.props.packagerSettings.zipFilePath}
+                        error={false}
+                      />
+                    </ItemGrid>
+                  )}
+
                   <ItemGrid xs={12} sm={12}>
                     <CustomInput
                       labelText="Solution"
                       id="solution"
+                      handleStateLift={this.handleChange}
                       formControlProps={{
                         fullWidth: true
                       }}
                       inputProps={{
-                        value: this.state.solutionFile.split("\\").pop(),
-                        disabled: true,
+                        value: this.splitZipFileString(
+                          this.props.packagerSettings.zipFile
+                        ).file,
+                        disabled:
+                          this.props.packagerSettings.action ===
+                            constants.EXTRACT ||
+                          this.props.packagerSettings.action === "",
                         name: "zipFile"
                       }}
                     />
@@ -118,22 +182,30 @@ class SolutionManagement extends React.Component {
               }
               footer={
                 <React.Fragment>
-                  <Button
-                    color="primary"
-                    onClick={this.browseForSolutionFile.bind(this)}
-                  >
-                    Browse
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={this.handleSolutionPackaging.bind(this)}
-                    disabled={this.state.solutionFile.length === 0}
-                  >
-                    {this.props.packagerSettings.action === "extract"
-                      ? "Extract "
-                      : "Pack "}
-                    Solution
-                  </Button>
+                  {(this.props.packagerSettings.action === constants.EXTRACT ||
+                    this.props.packagerSettings.action === "") && (
+                    <Button
+                      color="primary"
+                      onClick={this.browseForSolutionFile.bind(this)}
+                    >
+                      Browse
+                    </Button>
+                  )}
+                  {this.props.packagerSettings.action !== "" && (
+                    <Button
+                      color="primary"
+                      onClick={this.handleSolutionPackaging.bind(this)}
+                      disabled={
+                        this.props.packagerSettings.zipFile.length === 0 &&
+                        this.props.packagerSettings.action === constants.EXTRACT
+                      }
+                    >
+                      {this.props.packagerSettings.action === "extract"
+                        ? "Extract "
+                        : "Pack "}
+                      Solution
+                    </Button>
+                  )}
                 </React.Fragment>
               }
             />
@@ -144,7 +216,6 @@ class SolutionManagement extends React.Component {
               onUpdatePackagerSetting={this.props.onUpdatePackagerSetting}
             />
           </ItemGrid>
-          <Button onClick={this.showNotification.bind(this)}> Test </Button>
           <Notification />
         </Grid>
       </div>
@@ -162,7 +233,8 @@ const mapStateToProps = state => ({
 
 const mapActionsToProps = {
   onUpdatePackagerSetting: updatePackagerSetting,
-  onAddNotification: addNotification
+  onAddNotification: addNotification,
+  onRemoveNotification: removeNotification
 };
 
 export default connect(

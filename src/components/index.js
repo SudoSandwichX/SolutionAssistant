@@ -20,6 +20,7 @@ import IconButton from "./CustomButtons/IconButton.jsx";
 // #############################
 
 import CustomInput from "./CustomInput/CustomInput.jsx";
+import FolderInput from "./CustomInput/FolderBrowseInput.jsx";
 
 // ##############################
 // // // CustomSelect
@@ -139,5 +140,6 @@ export {
   Danger,
   Small,
   A,
-  Notification
+  Notification,
+  FolderInput
 };

@@ -21,9 +21,9 @@ class CustomSelect extends React.Component {
   handleChange = name => event => {
     this.setState({ selectedValue: event.target.value });
 
+    event.target.name = [name];
     // Ignore lifting state if not defined
-    if (this.props.handleStateLift)
-      this.props.handleStateLift([name], event.target);
+    if (this.props.handleStateLift) this.props.handleStateLift(event);
   };
 
   render() {
