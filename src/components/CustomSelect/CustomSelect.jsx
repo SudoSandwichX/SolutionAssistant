@@ -53,7 +53,7 @@ class CustomSelect extends React.Component {
       [classes.marginTop]: labelText === undefined
     });
     const menu = menuItems.map(item => (
-      <React.Fragment>
+      <React.Fragment key={item.value}>
         <option value={item.value}>{item.text}</option>
       </React.Fragment>
     ));
