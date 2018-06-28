@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import rootReducer from "./reducers";
 import thunk from "redux-thunk";
 
-const initialState = { };
+const initialState = {};
 
 const middleware = [thunk];
 
@@ -21,21 +21,18 @@ const store = createStore(
 
 const hist = createBrowserHistory();
 
-const Root = ({store}) => (
+const Root = ({ store }) => (
   <Provider store={store}>
-  <Router history={hist}>
-    <Switch>
-      {indexRoutes.map((prop, key) => {
-        return (
-          <Route path={prop.path} component={prop.component} key={key} />
-        );
-      })}
-    </Switch>
-  </Router>
-</Provider>
-)
-
-ReactDOM.render(
- <Root store={store}/>,
-  document.getElementById("root")
+    <Router history={hist}>
+      <Switch>
+        {indexRoutes.map((prop, key) => {
+          return (
+            <Route path={prop.path} component={prop.component} key={key} />
+          );
+        })}
+      </Switch>
+    </Router>
+  </Provider>
 );
+
+ReactDOM.render(<Root store={store} />, document.getElementById("root"));

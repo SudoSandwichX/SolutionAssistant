@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import React from "react";
 import { AddAlert } from "@material-ui/icons";
 import { Snackbar } from "components";
