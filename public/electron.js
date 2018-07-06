@@ -6,12 +6,14 @@ const fs = require("fs");
 const { app, BrowserWindow, ipcMain } = electron;
 
 const shell = require("node-powershell");
+const isDev = require("electron-is-dev");
 
-const Datastore = require("nedb"),
+/*const Datastore = require("nedb"),
   db = new Datastore({
     filename: `${path.dirname(__dirname)}\\assets\\datastore\\settings.store`,
     autoload: true
   });
+*/
 
 let ps = new shell({
   executionPolicy: "Bypass",
@@ -23,13 +25,22 @@ let ps = new shell({
 let win;
 
 function initializeApp() {
+  log.transports.file.level = "info";
   // Create the browser window.
-  win = new BrowserWindow({ width: 950, height: 600 });
-
+  win = new BrowserWindow({
+    minwidth: 950,
+    width: 1300,
+    minheight: 600,
+    height: 850
+  });
   // and load the index.html of the app.
   //win.loadFile("public/index.html");
-  win.loadURL("http://localhost:3000");
-
+  win.loadURL(
+    isDev
+      ? "http://localhost:3000"
+      : `file://${path.join(__dirname, "../build/index.html")}`
+  );
+  log.info(`file://${path.join(__dirname, "../build/index.html")}`);
   // Open the DevTools.
   //win.webContents.openDevTools();
 
@@ -43,7 +54,7 @@ function initializeApp() {
   });
 }
 
-setDefaultSettings();
+//setDefaultSettings();
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -70,6 +81,7 @@ app.on("activate", () => {
 /*
   Set Default Settings
 */
+/*
 function setDefaultSettings() {
   let settings = {
     _id: "id1",
@@ -81,10 +93,12 @@ function setDefaultSettings() {
     if (err) console.log(`ERROR ${err}`);
   });
 }
+*/
 
 /*
   Retrieve Settings
 */
+/*
 ipcMain.on("settings:retrieve", function(e) {
   db.findOne({ _id: "id1" }, { restEndpoint: 1, repoPath: 1 }, function(
     err,
@@ -93,12 +107,14 @@ ipcMain.on("settings:retrieve", function(e) {
     win.webContents.send("settings:update", settings);
   });
 });
+*/
 
 // TO-DO this is a bit complex. Simplify!
 // This will not be a great solution for a case with many settings
 /*
   Update Settings
 */
+/*
 ipcMain.on("settings:update", function(e, settings) {
   db.update(
     {
@@ -116,6 +132,7 @@ ipcMain.on("settings:update", function(e, settings) {
     }
   );
 });
+*/
 
 /*
 ipcMain.on("settings:update", function(e, settings) {
