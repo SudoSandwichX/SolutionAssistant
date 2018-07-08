@@ -40,7 +40,12 @@ function initializeApp() {
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
-  log.info(`file://${path.join(__dirname, "../build/index.html")}`);
+  log.info(
+    `Loading application primary index.html from: file://${path.join(
+      __dirname,
+      "../build/index.html"
+    )}`
+  );
   // Open the DevTools.
   //win.webContents.openDevTools();
 

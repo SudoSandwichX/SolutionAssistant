@@ -6,16 +6,14 @@ import {
   Button,
   CustomInput,
   ItemGrid,
-  Notification,
+  NotificationManager,
   FolderInput
 } from "components";
 import { connect } from "react-redux";
-import { updatePackagerSetting } from "../../actions/packagerSettingsActions";
-import {
-  addNotification,
-  removeNotification
-} from "../../actions/notificationActions";
+import { updatePackagerSetting } from "../../redux";
+import { addNotification, removeNotification } from "../../redux";
 import SolutionManagerTabs from "./SolutionManagerTabs";
+import { AddAlert, Message } from "@material-ui/icons";
 
 const constants = require("../../assets/Strings.js");
 
@@ -38,6 +36,11 @@ class SolutionManagement extends React.Component {
 
   componentDidMount() {
     ipcRenderer.on("packager:output", err => {
+      this.showNotification({
+        message: "Solution extracted successfully",
+        color: "success",
+        icon: AddAlert
+      });
       this.handleError(err);
     });
   }
@@ -62,7 +65,11 @@ class SolutionManagement extends React.Component {
     dialog.showOpenDialog(fileNames => {
       // fileNames is an array that contains all the selected
       if (fileNames === undefined) {
-        console.log("No file selected");
+        this.showNotification({
+          message: "No file selected!",
+          color: "warning",
+          icon: AddAlert
+        });
         return;
       } else {
         console.log(fileNames[0]);
@@ -78,7 +85,11 @@ class SolutionManagement extends React.Component {
     dialog.showOpenDialog({ properties: ["openDirectory"] }, directory => {
       // fileNames is an array that contains all the selected
       if (directory === undefined) {
-        console.log("No directory selected");
+        this.showNotification({
+          message: "No directory selected!",
+          color: "warning",
+          icon: AddAlert
+        });
         return;
       } else {
         console.log(directory[0]);
@@ -96,7 +107,9 @@ class SolutionManagement extends React.Component {
     if (settings.action === constants.EXTRACT) {
       if (!settings.zipFile) {
         this.showNotification({
-          message: "No Solution Package selected!"
+          message: "No Solution Package selected!",
+          color: "warning",
+          icon: AddAlert
         });
         isValid = false;
       }
@@ -109,7 +122,9 @@ class SolutionManagement extends React.Component {
     if (settings.action === constants.PACK) {
       if (!settings.zipFile) {
         this.showNotification({
-          message: "Please provide a solution name"
+          message: "Please provide a solution file name",
+          color: "warning",
+          icon: AddAlert
         });
         isValid = false;
       }
@@ -124,12 +139,12 @@ class SolutionManagement extends React.Component {
   }
 
   showNotification = notification => {
-    console.log("Show Note clicked");
-
     this.props.onAddNotification({
       id: Date.now(),
       message: notification.message,
-      open: true
+      open: true,
+      color: notification.color,
+      icon: notification.icon
     });
   };
 
@@ -216,7 +231,7 @@ class SolutionManagement extends React.Component {
               onUpdatePackagerSetting={this.props.onUpdatePackagerSetting}
             />
           </ItemGrid>
-          <Notification />
+          <NotificationManager displayDuration={6000} />
         </Grid>
       </div>
     );

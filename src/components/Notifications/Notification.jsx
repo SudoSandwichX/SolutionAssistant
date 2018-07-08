@@ -1,65 +1,96 @@
 import React from "react";
-import { AddAlert } from "@material-ui/icons";
-import { Snackbar } from "components";
-import { connect } from "react-redux";
-import {
-  addNotification,
-  removeNotification
-} from "../../actions/notificationActions";
-// this will store the notifications and their count to track them and also maxNotifications for use in internal functions
+import { withStyles, Snackbar, IconButton } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
+import PropTypes from "prop-types";
+import cx from "classnames";
+
+import notificationContentStyle from "../../assets/jss/material-dashboard-react/notificationContentStyle.jsx";
 
 class Notification extends React.Component {
-  constructor(props) {
-    super(props);
-    this.closeNotification = this.closeNotification.bind(this);
-  }
-  componentDidMount() {
-    console.log(this.props.notifications);
-  }
-
-  closeNotification(id) {
-    let notification = this.props.notifications.find(x => x.id === id);
-    this.props.onRemoveNotification(notification);
-    console.log(`Close Note ${notification.id}`);
+  closeSnackbar() {
+    this.props.closeNotification(this.props.id);
   }
 
   render() {
-    return (
-      <React.Fragment>
-        {this.props.notifications.length > 0 && (
-          <Snackbar
-            id={
-              this.props.notifications[this.props.notifications.length - 1].id
-            }
-            place="br"
-            color="info"
-            icon={AddAlert}
-            message={
-              this.props.notifications[this.props.notifications.length - 1]
-                .message
-            }
-            open={
-              this.props.notifications[this.props.notifications.length - 1].open
-            }
-            closeNotification={this.closeNotification}
-            close
+    const {
+      classes,
+      message,
+      color,
+      close,
+      icon,
+      place,
+      open,
+      id
+    } = this.props;
+    var action = [];
+    const messageClasses = cx({
+      [classes.iconMessage]: icon !== undefined
+    });
+    if (close !== undefined) {
+      action = [
+        <IconButton
+          className={classes.iconButton}
+          key="close"
+          aria-label="Close"
+          color="inherit"
+        >
+          <Close
+            className={classes.close}
+            onClick={this.closeSnackbar.bind(this)}
           />
-        )}
-      </React.Fragment>
+        </IconButton>
+      ];
+    }
+    return (
+      <Snackbar
+        key={id}
+        anchorOrigin={{
+          vertical: place.indexOf("t") === -1 ? "bottom" : "top",
+          horizontal:
+            place.indexOf("l") !== -1
+              ? "left"
+              : place.indexOf("c") !== -1
+                ? "center"
+                : "right"
+        }}
+        open={open}
+        message={
+          <div>
+            {icon !== undefined ? (
+              <this.props.icon className={classes.icon} />
+            ) : null}
+            <span className={messageClasses}>{message}</span>
+          </div>
+        }
+        action={action}
+        classes={{ root: classes.overridePositionFix }}
+        ContentProps={{
+          classes: {
+            root: classes.root + " " + classes[color],
+            message: classes.message
+          }
+        }}
+      />
     );
   }
 }
 
-const mapStateToProps = state => ({
-  notifications: state.notifications
-});
-
-const mapActionsToProps = {
-  onAddNotification: addNotification,
-  onRemoveNotification: removeNotification
+Notification.propTypes = {
+  classes: PropTypes.object.isRequired,
+  message: PropTypes.node.isRequired,
+  color: PropTypes.oneOf([
+    "",
+    "info",
+    "success",
+    "warning",
+    "danger",
+    "primary"
+  ]),
+  close: PropTypes.bool,
+  icon: PropTypes.func,
+  place: PropTypes.oneOf(["tl", "tr", "tc", "br", "bl", "bc"]),
+  open: PropTypes.bool,
+  closeNotification: PropTypes.func
 };
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps
-)(Notification);
+export default withStyles(notificationContentStyle)(Notification);

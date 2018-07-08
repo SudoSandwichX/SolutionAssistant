@@ -97,6 +97,7 @@ import A from "./Typography/A.jsx";
 // #############################
 
 import Notification from "./Notifications/Notification.jsx";
+import NotificationManager from "./Notifications/NotificationManager";
 
 export {
   // Cards
@@ -141,5 +142,6 @@ export {
   Small,
   A,
   Notification,
+  NotificationManager,
   FolderInput
 };
