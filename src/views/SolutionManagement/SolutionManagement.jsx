@@ -31,7 +31,9 @@ class SolutionManagement extends React.Component {
 
   state = {
     solutionFile: "",
-    count: 0
+    count: 0,
+    isPacking: false,
+    packageFolder: ""
   };
 
   componentDidMount() {
@@ -49,6 +51,11 @@ class SolutionManagement extends React.Component {
           icon: AddAlert
         });
       }
+      this.setState({
+        isPacking: false,
+        packageFolder:
+          type === "success" ? this.props.packagerSettings.folder : ""
+      });
       this.handleError(event);
     });
   }
@@ -137,13 +144,20 @@ class SolutionManagement extends React.Component {
         isValid = false;
       }
     }
-    if (isValid) ipcRenderer.send("packager", this.props.packagerSettings);
+    if (isValid) {
+      ipcRenderer.send("packager", this.props.packagerSettings);
+      this.setState({ isPacking: true });
+    }
   }
 
   splitZipFileString(str) {
     let path = str.substring(0, str.lastIndexOf("\\"));
     let file = this.props.packagerSettings.zipFile.split("\\").pop();
     return { path, file };
+  }
+
+  showInFileExplorer() {
+    electron.shell.showItemInFolder(this.state.packageFolder);
   }
 
   showNotification = notification => {
@@ -208,7 +222,7 @@ class SolutionManagement extends React.Component {
                   {(this.props.packagerSettings.action === constants.EXTRACT ||
                     this.props.packagerSettings.action === "") && (
                     <Button
-                      color="primary"
+                      color="secondary"
                       onClick={this.browseForSolutionFile.bind(this)}
                     >
                       Browse
@@ -219,14 +233,24 @@ class SolutionManagement extends React.Component {
                       color="primary"
                       onClick={this.handleSolutionPackaging.bind(this)}
                       disabled={
-                        this.props.packagerSettings.zipFile.length === 0 &&
-                        this.props.packagerSettings.action === constants.EXTRACT
+                        (this.props.packagerSettings.zipFile.length === 0 &&
+                          this.props.packagerSettings.action ===
+                            constants.EXTRACT) ||
+                        this.state.isPacking
                       }
                     >
                       {this.props.packagerSettings.action === "extract"
                         ? "Extract "
                         : "Pack "}
                       Solution
+                    </Button>
+                  )}
+                  {this.state.packageFolder && (
+                    <Button
+                      color="secondary"
+                      onClick={this.showInFileExplorer.bind(this)}
+                    >
+                      View in File Explorer
                     </Button>
                   )}
                 </React.Fragment>

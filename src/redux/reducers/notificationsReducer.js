@@ -23,27 +23,33 @@ export default function notificationsReducer(
         icon: payload.notification.icon
       });
       return newArray;
+      
 */
-      return update(state, {
-        $push: [
-          {
-            id: payload.notification.id,
-            message: payload.notification.message,
-            open: payload.notification.open,
-            color: payload.notification.color,
-            icon: payload.notification.icon
-          }
-        ]
-      });
-    case REMOVE_NOTIFICATION:
-      //const index = state.indexOf(notification);
-      const index = state.findIndex(obj => obj.id === payload.notification);
-      if (index >= 0) {
-        return update(state, { $splice: [[index, 1]] });
+
+      const index = state.findIndex(obj => obj.id === payload.notification.id);
+      if (index <= 0) {
+        return update(state, {
+          $push: [
+            {
+              id: payload.notification.id,
+              message: payload.notification.message,
+              open: payload.notification.open,
+              color: payload.notification.color,
+              icon: payload.notification.icon
+            }
+          ]
+        });
       } else {
         return state;
       }
-      break;
+    case REMOVE_NOTIFICATION:
+      //const index = state.indexOf(notification);
+      const index2 = state.findIndex(obj => obj.id === payload.notification);
+      if (index2 >= 0) {
+        return update(state, { $splice: [[index2, 1]] });
+      } else {
+        return state;
+      }
     default:
       return state;
   }

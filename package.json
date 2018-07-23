@@ -18,6 +18,9 @@
       "buildResources": "assets",
       "output": "dist"
     },
+    "win": {
+      "target": "portable"
+    },
     "extraResources": [
       {
         "from": "assets/powershell/",

@@ -26,7 +26,8 @@ function initializeApp() {
     minwidth: 950,
     width: 1300,
     minheight: 600,
-    height: 850
+    height: 850,
+    show: false
   });
   // and load the index.html of the app.
   //win.loadFile("public/index.html");
@@ -41,6 +42,28 @@ function initializeApp() {
       "../build/index.html"
     )}`
   );
+
+  // create a new `splash`-Window
+  splash = new BrowserWindow({
+    minwidth: 950,
+    width: 1300,
+    minheight: 600,
+    height: 850,
+    frame: false,
+    alwaysOnTop: true
+  });
+  splash.loadURL(
+    isDev
+      ? "http://localhost:3000/splash.html"
+      : `file://${path.join(__dirname, "../build/index.html")}`
+  );
+
+  // if main window is ready to show, then destroy the splash window and show up the main window
+  win.once("ready-to-show", () => {
+    splash.destroy();
+    win.show();
+  });
+
   // Open the DevTools.
   //win.webContents.openDevTools();
 

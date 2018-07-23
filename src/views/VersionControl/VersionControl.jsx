@@ -60,7 +60,7 @@ class VersionControl extends React.Component {
                         <span className="node">{entity.name}</span> // Header
                       );
                       const label3 = (
-                        <span className="node">{"Fields"}</span> // Header
+                        <span className="node">{"Fields"}</span> // Header 1
                       );
                       return (
                         <TreeView
